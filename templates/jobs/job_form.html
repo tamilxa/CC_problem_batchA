@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} | AuraCareers{% endblock %}
+
+{% block content %}
+<a href="{% url 'dashboard_employer' %}" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); text-decoration: none; font-size: 0.95rem; margin-bottom: 2rem; transition: var(--transition);" class="back-link">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    Back to Dashboard
+</a>
+
+<div class="success-card" style="max-width: 750px; padding: 3rem; text-align: left;">
+    <h1 class="success-title" style="margin-bottom: 0.5rem; font-size: 1.75rem; text-align: left;">{{ title }}</h1>
+    <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem;">Provide specifications for the career opening</p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+            <span style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.2rem; display: block;">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+            {% if field.errors %}
+            <span style="color: #ef4444; font-size: 0.85rem; margin-top: 0.25rem; display: block;">
+                {{ field.errors.0 }}
+            </span>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn-submit" style="margin-top: 1.5rem;">Save Job Posting</button>
+    </form>
+</div>
+{% endblock %}

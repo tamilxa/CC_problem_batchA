@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Candidate Dashboard | AuraCareers{% endblock %}
+
+{% block content %}
+<div class="hero-banner" style="margin-bottom: 2.5rem; text-align: left; position: relative;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 class="hero-title" style="font-size: 2.25rem;">Hello, {{ request.user.first_name|default:request.user.username }}</h1>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Track your job applications and check real-time status updates.</p>
+        </div>
+        <a href="{% url 'job_list' %}" class="btn-back" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;">Search More Jobs</a>
+    </div>
+</div>
+
+<h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; color: #fff;">My Applications ({{ applications.count }})</h2>
+
+<div class="jobs-grid">
+    {% for app in applications %}
+    <div class="job-card">
+        <div class="job-card-main">
+            <div class="company-avatar">
+                {{ app.job.company|slice:":1" }}
+            </div>
+            <div class="job-info">
+                <span class="job-company">{{ app.job.company }}</span>
+                <a href="{% url 'job_detail' app.job.pk %}" class="job-title">{{ app.job.title }}</a>
+                <div class="job-meta-row" style="margin-top: 0.5rem;">
+                    <span class="meta-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        {{ app.job.location }}
+                    </span>
+                    <span class="badge">{{ app.job.job_type }}</span>
+                    <span class="meta-item">Applied on {{ app.applied_at|date:"M d, Y" }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="job-card-actions" style="flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+            <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Application Status</span>
+            
+            {% if app.status == 'Applied' %}
+                <span class="badge" style="background-color: rgba(245, 158, 11, 0.08); color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); padding: 0.4rem 1rem; border-radius: 50px; font-weight: 700; font-size: 0.85rem;">Applied</span>
+            {% elif app.status == 'Screening' %}
+                <span class="badge" style="background-color: rgba(59, 130, 246, 0.08); color: #3b82f6; border-color: rgba(59, 130, 246, 0.2); padding: 0.4rem 1rem; border-radius: 50px; font-weight: 700; font-size: 0.85rem;">Screening</span>
+            {% elif app.status == 'Interview' %}
+                <span class="badge" style="background-color: rgba(139, 92, 246, 0.08); color: #8b5cf6; border-color: rgba(139, 92, 246, 0.2); padding: 0.4rem 1rem; border-radius: 50px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);">Interview</span>
+            {% elif app.status == 'Offered' %}
+                <span class="badge" style="background-color: rgba(16, 185, 129, 0.08); color: #10b981; border-color: rgba(16, 185, 129, 0.2); padding: 0.4rem 1rem; border-radius: 50px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);">Offered</span>
+            {% else %}
+                <span class="badge" style="background-color: rgba(239, 68, 68, 0.08); color: #ef4444; border-color: rgba(239, 68, 68, 0.2); padding: 0.4rem 1rem; border-radius: 50px; font-weight: 700; font-size: 0.85rem;">Rejected</span>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div style="text-align: center; padding: 4rem 2rem; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 16px;">
+        <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #fff;">No Applications Yet</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Explore roles and start applying to find your dream job.</p>
+        <a href="{% url 'job_list' %}" class="btn-back">Browse Jobs</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

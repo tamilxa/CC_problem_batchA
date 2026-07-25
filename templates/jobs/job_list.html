@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Explore Career Opportunities | AuraCareers{% endblock %}
+
+{% block content %}
+<div class="hero-banner">
+    <h1 class="hero-title">Discover Your Next Breakthrough</h1>
+    <p class="hero-subtitle">Explore high-impact roles at the world's most innovative companies. Filter by your expertise and apply in seconds.</p>
+</div>
+
+<!-- Filters Section -->
+<div class="filter-card">
+    <form method="get" action="{% url 'job_list' %}" class="filter-form">
+        <!-- Search Input -->
+        <div class="form-group-filter">
+            <label for="search">Keyword Search</label>
+            <div class="search-input-wrapper">
+                <input type="text" id="search" name="search" class="search-input" placeholder="Role, company, skills..." value="{{ search_query }}">
+            </div>
+        </div>
+
+        <!-- Department Filter -->
+        <div class="form-group-filter">
+            <label for="department">Department</label>
+            <select id="department" name="department" class="filter-select">
+                <option value="">All Departments</option>
+                {% for dept in departments %}
+                <option value="{{ dept }}" {% if selected_department == dept %}selected{% endif %}>{{ dept }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Job Type Filter -->
+        <div class="form-group-filter">
+            <label for="job_type">Job Type</label>
+            <select id="job_type" name="job_type" class="filter-select">
+                <option value="">All Types</option>
+                {% for type in job_types %}
+                <option value="{{ type }}" {% if selected_job_type == type %}selected{% endif %}>{{ type }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Experience Level Filter -->
+        <div class="form-group-filter">
+            <label for="experience_level">Experience</label>
+            <select id="experience_level" name="experience_level" class="filter-select">
+                <option value="">All Levels</option>
+                {% for lvl in experience_levels %}
+                <option value="{{ lvl }}" {% if selected_experience_level == lvl %}selected{% endif %}>{{ lvl }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 0.5rem; width: 100%;">
+            <button type="submit" class="btn-search" style="flex: 1;">Search</button>
+            {% if search_query or selected_department or selected_job_type or selected_experience_level %}
+            <a href="{% url 'job_list' %}" class="btn-reset" title="Clear filters">Reset</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<!-- Jobs Grid -->
+<div class="jobs-grid">
+    {% for job in jobs %}
+    <div class="job-card">
+        <div class="job-card-main">
+            <div class="company-avatar">
+                {{ job.company|slice:":1" }}
+            </div>
+            <div class="job-info">
+                <span class="job-company">{{ job.company }}</span>
+                <a href="{% url 'job_detail' job.pk %}" class="job-title">{{ job.title }}</a>
+                <div class="job-meta-row">
+                    <span class="meta-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        {{ job.location }}
+                    </span>
+                    <span class="badge badge-type">{{ job.job_type }}</span>
+                    <span class="badge badge-level">{{ job.experience_level }}</span>
+                    {% if job.salary_range %}
+                    <span class="meta-item" style="color: var(--success-color); font-weight: 600;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                        {{ job.salary_range }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="job-card-actions">
+            <a href="{% url 'job_detail' job.pk %}" class="btn-detail">View Details &amp; Apply</a>
+        </div>
+    </div>
+    {% empty %}
+    <div style="text-align: center; padding: 4rem 2rem; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 16px;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1.5rem;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #fff;">No Job Postings Found</h3>
+        <p style="color: var(--text-secondary);">Try refining your search terms or adjusting the filters.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ job.title }} at {{ job.company }} | AuraCareers{% endblock %}
+
+{% block content %}
+<a href="{% url 'job_list' %}" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); text-decoration: none; font-size: 0.95rem; margin-bottom: 2rem; transition: var(--transition);" class="back-link">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    Back to Job Board
+</a>
+
+<div class="detail-grid">
+    <!-- Main Content Panel -->
+    <div class="detail-main">
+        <div class="detail-header">
+            <div class="detail-company-logo">
+                {{ job.company|slice:":1" }}
+            </div>
+            <div class="detail-header-info">
+                <span style="color: var(--accent-color); font-weight: 600; letter-spacing: 0.05em; font-size: 0.9rem; text-transform: uppercase;">{{ job.company }}</span>
+                <h1 class="detail-title">{{ job.title }}</h1>
+                <div class="job-meta-row" style="margin-top: 0.5rem;">
+                    <span class="meta-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        {{ job.location }}
+                    </span>
+                    <span class="badge badge-type">{{ job.job_type }}</span>
+                    <span class="badge badge-level">{{ job.experience_level }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <h2 class="detail-section-title">About the Role</h2>
+            <div class="detail-content">{{ job.description }}</div>
+        </div>
+
+        <div class="detail-section">
+            <h2 class="detail-section-title">Key Requirements</h2>
+            <ul class="detail-list">
+                {% for req in job.get_requirements_list %}
+                <li class="detail-list-item">{{ req }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {% if job.benefits %}
+        <div class="detail-section">
+            <h2 class="detail-section-title">What We Offer</h2>
+            <ul class="detail-list">
+                {% for benefit in job.get_benefits_list %}
+                <li class="detail-list-item">{{ benefit }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Sidebar Apply Form & Info -->
+    <div class="detail-sidebar">
+        <!-- Job Details Summary Card -->
+        <div class="sidebar-card">
+            <h3 class="sidebar-card-title">Job Overview</h3>
+            <div class="sidebar-info-row">
+                <span class="sidebar-info-label">Department</span>
+                <span class="sidebar-info-value">{{ job.department }}</span>
+            </div>
+            <div class="sidebar-info-row">
+                <span class="sidebar-info-label">Job Type</span>
+                <span class="sidebar-info-value">{{ job.job_type }}</span>
+            </div>
+            <div class="sidebar-info-row">
+                <span class="sidebar-info-label">Experience</span>
+                <span class="sidebar-info-value">{{ job.experience_level }}</span>
+            </div>
+            {% if job.salary_range %}
+            <div class="sidebar-info-row">
+                <span class="sidebar-info-label">Salary Range</span>
+                <span class="sidebar-info-value" style="color: var(--success-color);">{{ job.salary_range }}</span>
+            </div>
+            {% endif %}
+            <div class="sidebar-info-row">
+                <span class="sidebar-info-label">Posted Date</span>
+                <span class="sidebar-info-value">{{ job.created_at|date:"M d, Y" }}</span>
+            </div>
+        </div>
+
+        <!-- Application Submission Card -->
+        <div class="sidebar-card" id="apply-section">
+            <h3 class="form-title">Apply for this Role</h3>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem;">
+                        {{ field.errors.0 }}
+                    </span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="btn-submit">Submit Application</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
