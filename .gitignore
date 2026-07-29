@@ -1,0 +1,17 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Django local files
+*.sqlite3
+*.log
+
+# Secrets and local environment
+.env
+.env.*
+id_rsa
+id_rsa.pub
+tunnel.txt
+
+# Local workspace artifacts
+AI_Assisted_Self_Healing_Network_Monitoring_System/

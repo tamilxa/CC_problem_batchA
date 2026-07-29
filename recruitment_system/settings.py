@@ -117,3 +117,13 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.loca.lt',
+    'https://*.lhr.life',
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+]
+
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'job_list'
